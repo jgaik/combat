@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "combat"
+version = "0.1.0"
+description = ""
+authors = ["repl.it user <replituser@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-vlc = "^3.0.10114"
+ttkwidgets = "^0.11.0"
+pynput = "^1.6.8"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

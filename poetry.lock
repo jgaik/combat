@@ -1,0 +1,165 @@
+[[package]]
+category = "main"
+description = "Python Imaging Library (Fork)"
+name = "pillow"
+optional = false
+python-versions = ">=3.5"
+version = "7.1.2"
+
+[[package]]
+category = "main"
+description = "Monitor and control user input devices"
+name = "pynput"
+optional = false
+python-versions = "*"
+version = "1.6.8"
+
+[package.dependencies]
+pyobjc-framework-Quartz = ">=3.0"
+python-xlib = ">=0.17"
+six = "*"
+
+[[package]]
+category = "main"
+description = "Python<->ObjC Interoperability Module"
+marker = "sys_platform == \"darwin\""
+name = "pyobjc-core"
+optional = false
+python-versions = ">=3.6"
+version = "6.2.1"
+
+[[package]]
+category = "main"
+description = "Wrappers for the Cocoa frameworks on macOS"
+marker = "sys_platform == \"darwin\""
+name = "pyobjc-framework-cocoa"
+optional = false
+python-versions = ">=3.6"
+version = "6.2.1"
+
+[package.dependencies]
+pyobjc-core = ">=6.2.1"
+
+[[package]]
+category = "main"
+description = "Wrappers for the Quartz frameworks on macOS"
+marker = "sys_platform == \"darwin\""
+name = "pyobjc-framework-quartz"
+optional = false
+python-versions = ">=3.6"
+version = "6.2.1"
+
+[package.dependencies]
+pyobjc-core = ">=6.2.1"
+pyobjc-framework-Cocoa = ">=6.2.1"
+
+[[package]]
+category = "main"
+description = "VLC bindings for python."
+name = "python-vlc"
+optional = false
+python-versions = "*"
+version = "3.0.10114"
+
+[[package]]
+category = "main"
+description = "Python X Library"
+marker = "sys_platform in \"linux\""
+name = "python-xlib"
+optional = false
+python-versions = "*"
+version = "0.27"
+
+[package.dependencies]
+six = ">=1.10.0"
+
+[[package]]
+category = "main"
+description = "Python 2 and 3 compatibility utilities"
+name = "six"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+version = "1.15.0"
+
+[[package]]
+category = "main"
+description = "A collection of widgets for Tkinter's ttk extensions by various authors"
+name = "ttkwidgets"
+optional = false
+python-versions = "*"
+version = "0.11.0"
+
+[package.dependencies]
+pillow = "*"
+
+[metadata]
+content-hash = "256b04bb830485a0eb038b89fe9bbc0e0d87e6fca0d3a0402de4389ce6812c1c"
+python-versions = "^3.8"
+
+[metadata.files]
+pillow = [
+    {file = "Pillow-7.1.2-cp35-cp35m-macosx_10_10_intel.whl", hash = "sha256:ae2b270f9a0b8822b98655cb3a59cdb1bd54a34807c6c56b76dd2e786c3b7db3"},
+    {file = "Pillow-7.1.2-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:d23e2aa9b969cf9c26edfb4b56307792b8b374202810bd949effd1c6e11ebd6d"},
+    {file = "Pillow-7.1.2-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:b532bcc2f008e96fd9241177ec580829dee817b090532f43e54074ecffdcd97f"},
+    {file = "Pillow-7.1.2-cp35-cp35m-win32.whl", hash = "sha256:12e4bad6bddd8546a2f9771485c7e3d2b546b458ae8ff79621214119ac244523"},
+    {file = "Pillow-7.1.2-cp35-cp35m-win_amd64.whl", hash = "sha256:9744350687459234867cbebfe9df8f35ef9e1538f3e729adbd8fde0761adb705"},
+    {file = "Pillow-7.1.2-cp36-cp36m-macosx_10_10_x86_64.whl", hash = "sha256:f54be399340aa602066adb63a86a6a5d4f395adfdd9da2b9a0162ea808c7b276"},
+    {file = "Pillow-7.1.2-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:1f694e28c169655c50bb89a3fa07f3b854d71eb47f50783621de813979ba87f3"},
+    {file = "Pillow-7.1.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:f784aad988f12c80aacfa5b381ec21fd3f38f851720f652b9f33facc5101cf4d"},
+    {file = "Pillow-7.1.2-cp36-cp36m-win32.whl", hash = "sha256:b37bb3bd35edf53125b0ff257822afa6962649995cbdfde2791ddb62b239f891"},
+    {file = "Pillow-7.1.2-cp36-cp36m-win_amd64.whl", hash = "sha256:b67a6c47ed963c709ed24566daa3f95a18f07d3831334da570c71da53d97d088"},
+    {file = "Pillow-7.1.2-cp37-cp37m-macosx_10_10_x86_64.whl", hash = "sha256:eaa83729eab9c60884f362ada982d3a06beaa6cc8b084cf9f76cae7739481dfa"},
+    {file = "Pillow-7.1.2-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:f46e0e024346e1474083c729d50de909974237c72daca05393ee32389dabe457"},
+    {file = "Pillow-7.1.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:0e2a3bceb0fd4e0cb17192ae506d5f082b309ffe5fc370a5667959c9b2f85fa3"},
+    {file = "Pillow-7.1.2-cp37-cp37m-win32.whl", hash = "sha256:ccc9ad2460eb5bee5642eaf75a0438d7f8887d484490d5117b98edd7f33118b7"},
+    {file = "Pillow-7.1.2-cp37-cp37m-win_amd64.whl", hash = "sha256:b943e71c2065ade6fef223358e56c167fc6ce31c50bc7a02dd5c17ee4338e8ac"},
+    {file = "Pillow-7.1.2-cp38-cp38-macosx_10_10_x86_64.whl", hash = "sha256:04766c4930c174b46fd72d450674612ab44cca977ebbcc2dde722c6933290107"},
+    {file = "Pillow-7.1.2-cp38-cp38-manylinux1_i686.whl", hash = "sha256:f455efb7a98557412dc6f8e463c1faf1f1911ec2432059fa3e582b6000fc90e2"},
+    {file = "Pillow-7.1.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:ee94fce8d003ac9fd206496f2707efe9eadcb278d94c271f129ab36aa7181344"},
+    {file = "Pillow-7.1.2-cp38-cp38-win32.whl", hash = "sha256:4b02b9c27fad2054932e89f39703646d0c543f21d3cc5b8e05434215121c28cd"},
+    {file = "Pillow-7.1.2-cp38-cp38-win_amd64.whl", hash = "sha256:3d25dd8d688f7318dca6d8cd4f962a360ee40346c15893ae3b95c061cdbc4079"},
+    {file = "Pillow-7.1.2-pp373-pypy36_pp73-win32.whl", hash = "sha256:0f01e63c34f0e1e2580cc0b24e86a5ccbbfa8830909a52ee17624c4193224cd9"},
+    {file = "Pillow-7.1.2-py3.8-macosx-10.9-x86_64.egg", hash = "sha256:70e3e0d99a0dcda66283a185f80697a9b08806963c6149c8e6c5f452b2aa59c0"},
+    {file = "Pillow-7.1.2.tar.gz", hash = "sha256:a0b49960110bc6ff5fead46013bcb8825d101026d466f3a4de3476defe0fb0dd"},
+]
+pynput = [
+    {file = "pynput-1.6.8-py2.py3-none-any.whl", hash = "sha256:42d6d58abe401a4c98ea04e443e61f74b6b0f97672f42042f566c68700ad0c65"},
+    {file = "pynput-1.6.8-py3.7.egg", hash = "sha256:dffcf42299aa25248d1a508b14f988b3a55aad8afbf42dfa3a8f259cd96bb15b"},
+    {file = "pynput-1.6.8.tar.gz", hash = "sha256:68c1863d6a1520b44b6a915e866cbfa1b8d127aef9289f25183c93e28ee5049a"},
+]
+pyobjc-core = [
+    {file = "pyobjc-core-6.2.1.tar.gz", hash = "sha256:ea9ab7839a022668964ca8ab4f37dc75c04743354260370d463ebdce5c05aa38"},
+    {file = "pyobjc_core-6.2.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:492519af43f4364aefacbe1706d55c712f3c6b73e4702a40cebf25bdf0373182"},
+    {file = "pyobjc_core-6.2.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:ce883d94a50b3fc285f39ef0286bbe8c6b50e87f310c1dea8b82996a4f4dd135"},
+    {file = "pyobjc_core-6.2.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:503e42b9592dbc17cadb455fff3cfcc68caa00d3b815375ed9afb159b2722014"},
+    {file = "pyobjc_core-6.2.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e68cec4f6d069fba1b3364b983abc9dff49763b58270f01904fc80ab8e7c4051"},
+]
+pyobjc-framework-cocoa = [
+    {file = "pyobjc-framework-Cocoa-6.2.1.tar.gz", hash = "sha256:c41dc4b590a6bd10f60d2b979508a1b02c38664b3bcb2225f914439485a1551f"},
+    {file = "pyobjc_framework_Cocoa-6.2.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:d46b8587aeea09baa998a526d741162141a12660ef57f8114fc9dd67297c6045"},
+    {file = "pyobjc_framework_Cocoa-6.2.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:4c4ecb69f17d3291562fa5adfe55a20f4a9f03e25baac7d9fbe2e54aa1f17081"},
+    {file = "pyobjc_framework_Cocoa-6.2.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:94260a8366569625d5f9380b1b8c3b58a54a883a6412dcc47353f8bcce9da5b7"},
+    {file = "pyobjc_framework_Cocoa-6.2.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:17737dfd80b7e89f654413b52eb934b9c180442f60c728545b5404655a05f229"},
+]
+pyobjc-framework-quartz = [
+    {file = "pyobjc-framework-Quartz-6.2.1.tar.gz", hash = "sha256:fd97fe55c6658ab9a44c2d2a1522166329b3af64c51fd9debc6e9c216c3ac253"},
+    {file = "pyobjc_framework_Quartz-6.2.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:f6d8e6da606f505bc4eefe2299ecfb7bdf09bf69d75145de6a13d14bd42fb3ca"},
+    {file = "pyobjc_framework_Quartz-6.2.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:b16305cc6a774b530464ba5d42be9b169c83edaad6ac13605a8187db3709a2a1"},
+    {file = "pyobjc_framework_Quartz-6.2.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:9d1343845e0c58a535813adcb48b9e4fef4e6ea27129c5d5426709fda4497793"},
+    {file = "pyobjc_framework_Quartz-6.2.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:48f065777b678205c0a78418797ad67b0abbc61eff0749796fee2c737b044f11"},
+]
+python-vlc = [
+    {file = "python-vlc-3.0.10114.tar.gz", hash = "sha256:c1a8a295bea8277fa3d9a07dcdf873fe18c5f11a0e4d1f618df47c316fe0003b"},
+    {file = "python_vlc-3.0.10114-py3-none-any.whl", hash = "sha256:b19cf0d74aa711ab62618efeb942ca898c50bd9f588ac9787c7c0ec95b20b73f"},
+]
+python-xlib = [
+    {file = "python-xlib-0.27.tar.bz2", hash = "sha256:a90667c70905c6ef0754c8a09fa61acbc1e1b7ddb946d527831800d7cbfe9348"},
+    {file = "python_xlib-0.27-py2.py3-none-any.whl", hash = "sha256:b251d6679796af4ddabc02b170a5c38eda41f92a83d08fdcfeef5841c6467ac7"},
+]
+six = [
+    {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
+    {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
+]
+ttkwidgets = [
+    {file = "ttkwidgets-0.11.0.tar.gz", hash = "sha256:107aa747e2f2459a7587793a9649b5a5717396487f7f542370cdc6dccf15447e"},
+]

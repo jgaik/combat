@@ -1,22 +1,23 @@
-import vlc
+#import vlc
 import os
 import shutil
 import random
 from time import sleep
 from threading import Thread
-from pynput import keyboard
+#from pynput import keyboard
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 import tkinter as tk
 from tkinter import ttk
 import ttkwidgets
 
+TRACKS = 10
 
 def getNumbers(path):
     return sorted([int(x) for x in os.listdir(path) if os.path.isdir(path + os.sep + x) and x.isdigit()])
 
 
 def randomChoreo(numbers):
-    return random.choices(numbers, k=10)
+    return random.choices(numbers, k=TRACKS)
 
 
 def prepareList(path, choreoNumbers):
@@ -26,7 +27,7 @@ def prepareList(path, choreoNumbers):
     listDraw = ImageDraw.Draw(imageList)
     listFont = ImageFont.truetype(path + os.sep + 'font.ttf', 50)
     listText = "Randomized Body Combat choreography playlist:" + os.linesep
-    for x in range(10):
+    for x in range(TRACKS):
         imgTemp = Image.new('1', (1920, 1080))
         tempDraw = ImageDraw.Draw(imgTemp)
         trackText = f" -> Track {x} - BodyCombat {choreoNumbers[x]}"
@@ -46,7 +47,7 @@ def prepareList(path, choreoNumbers):
             'list': path + os.sep + "temp" + os.sep + "list.png",
             'images': images}
 
-
+'''
 class Player:
 
     def __init__(self, playlist):
@@ -97,7 +98,7 @@ class Player:
             if not self._active:
                 return
 
-
+'''
 class App:
 
     def __init__(self, master, path):
@@ -109,30 +110,104 @@ class App:
         icon = icon.resize((20, 20))
         self.image_icon = ImageTk.PhotoImage(icon)
 
+        self.frame_choreo = tk.Frame(self.master)
+        self.frame_track = tk.Frame(self.master)
+        self.frame_random = tk.Frame(self.master)
+        self.frame_player = tk.Frame(self.master)
+        self.frame_choreo.grid(row=0,column=0)
+        self.frame_track.grid(row=0,column=1)
+        self.frame_random.grid(row=0,column=2)
+        self.frame_player.grid(row=1,column=0,columnspan=3)
+
+
+        #choreo list
+        ttk.Label(self.frame_choreo, text="Choreographies:").grid(sticky="W")
+        self.var_all_choreo = tk.BooleanVar()
+        self.var_all_choreo.set(True)
+        self.check_all_choreo = ttk.Checkbutton(self.frame_choreo, text="Include all", variable=self.var_all_choreo, command=self.event_choreo_all)
         self.list_choreo = {}
-        self.tree_include_choreo = ttkwidgets.CheckboxTreeview(self.master)
+        self.tree_include_choreo = ttkwidgets.CheckboxTreeview(self.frame_choreo, show="tree")
+        self.tree_include_choreo.bind("<<TreeviewSelect>>", self.event_choreo_check)
         for item in getNumbers(self.path):
             self.list_choreo[item] = self.tree_include_choreo.insert(
                 "", "end", text=item)
             self.tree_include_choreo.change_state(
                 self.list_choreo[item], "checked")
-        self.tree_include_choreo.pack()
+        self.tree_include_choreo.grid(sticky="WE")
+        self.check_all_choreo.grid(sticky="W")
 
+        #track list
+        ttk.Label(self.frame_track, text="Tracks:").grid(sticky="W")
+        self.var_all_track = tk.BooleanVar()
+        self.var_all_track.set(True)
+        self.check_all_track = ttk.Checkbutton(self.frame_track, text="Include all", variable=self.var_all_track)
         self.list_track = {}
-        self.tree_include_track = ttkwidgets.CheckboxTreeview(self.master)
-        for item in range(10):
-            self.list_choreo[item] = self.tree_include_track.insert(
+        self.tree_include_track = ttkwidgets.CheckboxTreeview(self.frame_track, show="tree")
+        self.tree_include_track.bind("<<TreeviewSelect>>", self.event_track_check)
+        for item in range(TRACKS):
+            self.list_track[item] = self.tree_include_track.insert(
                 "", "end", text=f"Track {item}")
             self.tree_include_track.change_state(
-                self.list_choreo[item], "checked")
-        self.tree_include_track.pack()
+                self.list_track[item], "checked")
+        self.tree_include_track.grid(sticky="WE")
+        self.check_all_track.grid(sticky="W")
+        
+        #random list
+        self.button_random = ttk.Button(self.frame_random, text="Randomize", command=self.event_random)
+        self.button_random.grid()
+        self.tree_random = ttkwidgets.CheckboxTreeview(self.frame_random, show="tree")
+        self.tree_random.grid()
+        self.button_reroll = ttk.Button(
+            self.frame_random, text="Reroll selected", image=self.image_icon, compound=tk.LEFT, command=self.event_reroll)
+        self.button_reroll.grid()
 
-        self.check_all_choreo = ttk.Checkbutton(self.master, text="All")
-        self.check_all_track = ttk.Checkbutton(self.master, text="All")
+        #player
+        self.button_end = ttk.Button(self.frame_player, text="End", command=self.end)
+        self.button_end.grid(sticky="W")
 
-        self.button = ttk.Button(
-            self.master, image=self.image_icon)
-        self.button.pack()
+    def event_choreo_check(self, event):
+      self.var_all_choreo.set(len(self.tree_include_choreo.get_checked()) == len(self.list_choreo))
+
+    def event_choreo_all(self):
+      if self.var_all_choreo.get():
+        for item in self.list_choreo.values():
+          self.tree_include_choreo.change_state(item, "checked")
+      else:
+        for item in self.list_choreo.values():
+          self.tree_include_choreo.change_state(item, "unchecked")
+
+    def event_track_check(self, event):
+      self.var_all_track.set(len(self.tree_include_track.get_checked()) == len(self.list_track))
+
+    def event_track_all(self):
+      if self.var_all_track.get():
+        for item in self.list_track.values():
+          self.tree_include_track.change_state(item, "checked")
+      else:
+        for item in self.list_track.values():
+          self.tree_include_track.change_state(item, "unchecked")
+
+    def event_random(self):
+      self.tree_random.delete(*self.tree_random.get_children())
+      list_include_choreo = self.tree_include_choreo.get_checked()
+      list_random = randomChoreo([x for x in self.list_choreo.keys() if self.list_choreo[x] in list_include_choreo])
+      list_include_track = self.tree_include_track.get_checked()
+      self.list_randow_choreo = {}
+      for item in self.list_track.keys():
+        if self.list_track[item] in list_include_track:
+          self.list_randow_choreo[item] = [
+            self.tree_random.insert("", "end", text=f"Track {item} - BodyCombat {list_random[item]}"),
+            item,
+            list_random[item]]
+
+    def event_reroll(self):
+      list_include_random = self.tree_random.get_checked()
+      list_include_track = self.tree_include_track.get_checked()
+
+      list_track = [x for x in self.list_track.keys() if self.list_track[x] in list_include_track]
+      for item in self.list_random_choreo.keys():
+        pass
+        
 
     def end(self):
         shutil.rmtree(self.path + os.sep + "temp")

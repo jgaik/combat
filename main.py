@@ -5,11 +5,14 @@ import random
 from time import sleep
 from threading import Thread
 from pynput import keyboard
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageTk
+import tkinter as tk
+from tkinter import ttk
+import ttkwidgets
 
 
 def getNumbers(path):
-    return [int(x) for x in os.listdir(path) if os.path.isdir(path + os.sep + x)]
+    return sorted([int(x) for x in os.listdir(path) if os.path.isdir(path + os.sep + x) and x.isdigit()])
 
 
 def randomChoreo(numbers):
@@ -95,8 +98,50 @@ class Player:
                 return
 
 
+class App:
+
+    def __init__(self, master, path):
+        self.master = master
+        self.path = path
+        self.master.protocol("WM_DELETE_WINDOW", self.end)
+        os.mkdir(path + os.sep + "temp")
+        icon = Image.open(path + os.sep + "icon.png")
+        icon = icon.resize((20, 20))
+        self.image_icon = ImageTk.PhotoImage(icon)
+
+        self.list_choreo = {}
+        self.tree_include_choreo = ttkwidgets.CheckboxTreeview(self.master)
+        for item in getNumbers(self.path):
+            self.list_choreo[item] = self.tree_include_choreo.insert(
+                "", "end", text=item)
+            self.tree_include_choreo.change_state(
+                self.list_choreo[item], "checked")
+        self.tree_include_choreo.pack()
+
+        self.list_track = {}
+        self.tree_include_track = ttkwidgets.CheckboxTreeview(self.master)
+        for item in range(10):
+            self.list_choreo[item] = self.tree_include_track.insert(
+                "", "end", text=f"Track {item}")
+            self.tree_include_track.change_state(
+                self.list_choreo[item], "checked")
+        self.tree_include_track.pack()
+
+        self.check_all_choreo = ttk.Checkbutton(self.master, text="All")
+        self.check_all_track = ttk.Checkbutton(self.master, text="All")
+
+        self.button = ttk.Button(
+            self.master, image=self.image_icon)
+        self.button.pack()
+
+    def end(self):
+        shutil.rmtree(self.path + os.sep + "temp")
+        self.master.destroy()
+
+
 if __name__ == "__main__":
     path = os.getcwd() + os.sep + "random"
+    """
     try:
         choreo = randomChoreo(getNumbers(path))
         os.mkdir(path + os.sep + "temp")
@@ -105,3 +150,7 @@ if __name__ == "__main__":
         player.play()
     finally:
         shutil.rmtree(path + os.sep + "temp")
+    """
+    root = tk.Tk()
+    app = App(root, path)
+    root.mainloop()

@@ -48,12 +48,14 @@ def prepareList(path, tracklist):
 class App:
 
     def __init__(self, master, path):
+        self.player = player.Player()
         self.master = master
         self.path = path
         self.master.protocol("WM_DELETE_WINDOW", self.end)
         os.mkdir(path + os.sep + "temp")
         icon = Image.open(path + os.sep + "icon.png")
         icon = icon.resize((20, 20))
+        self.master.bind("<Key>", self.event_key)
         self.image_icon = ImageTk.PhotoImage(icon)
         self.player = player.Player()
 
@@ -216,6 +218,14 @@ class App:
     def end(self):
         shutil.rmtree(self.path + os.sep + "temp")
         self.master.destroy()
+
+    def event_key(self, event):
+        if event.keysym == "space":
+            self.player.control(player.Modes.PAUSEPLAY)
+        if event.keysym == "Left":
+            self.player.control(player.Modes.PREVIOUS)
+        if event.keysym == "Right":
+            event.player.control(player.Modes.NEXT)
 
 
 if __name__ == "__main__":

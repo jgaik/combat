@@ -1,21 +1,27 @@
 import vlc
 from time import sleep
 import enum
+from pynput import keyboard
 
 
-class Modes(enum.Enum):
-    NEXT = enum.auto()
-    PREVIOUS = enum.auto()
-    PAUSEPLAY = enum.auto()
+class Modes:
+    NEXT = keyboard.Key.right
+    PREVIOUS = keyboard.Key.left
+    PAUSEPLAY = keyboard.Key.space
+    END = keyboard.Key.esc
 
 
 class Player:
 
+    def press(self, modekey):
+        if modekey in Modes.__dict__.values():
+            self.control(modekey)
+
     def __init__(self):
-        self.idx_playing = 0
+        self.idx_playing = -1
         self._active = False
 
-        self.instance = vlc.Instance('--fullscreen')
+        self.instance = vlc.Instance('--no-xlib --fullscreen')
         self.player = self.instance.media_list_player_new()
         self.manager = self.player.event_manager()
         self.manager.event_attach(
@@ -31,31 +37,40 @@ class Player:
             self.media_len += 2
         self.player.set_media_list(media_list)
 
-    def play(self, delay=None):
+    def play(self, wait=False):
         self._active = True
+        self.listener = keyboard.Listener(on_release=self.press)
         self.player.play()
-        self.wait(None)
+        self.listener.start()
         while self._active:
-            pass
+            if self.player.get_state() == vlc.State.Ended and self.idx_playing == self.media_len - 1:
+                self.control(Modes.END)
 
     def control(self, mode):
         if mode == Modes.NEXT:
-            self.player.next()
+            if self.idx_playing < self.media_len - 2:
+                if self.idx_playing % 2 == 0:
+                    self.player.next()
+                else:
+                    self.idx_playing += 1
+                    self.player.play_item_at_index(self.idx_playing + 1)
+
         if mode == Modes.PREVIOUS:
-            self.idx_playing -= 2
-            self.player.play_item_at_idx(self.idx_playing)
+            if self.idx_playing > 1:
+                if self.idx_playing % 2 == 0:
+                    self.idx_playing -= 2
+                    self.player.previous()
+                else:
+                    self.idx_playing -= 3
+                    self.player.play_item_at_index(self.idx_playing + 1)
+
         if mode == Modes.PAUSEPLAY:
             self.player.pause()
 
-    def wait(self, time):
-        sleep(2)
-        self.player.pause()
-        if time is None:
-            pass
-        else:
-            sleep(time)
-            self.player.pause()
+        if mode == Modes.END:
+            self.player.stop()
+            self.listener.stop()
+            self._active = False
 
     def event_itemchange(self, event):
         self.idx_playing += 1
-        print(self.idx_playing)

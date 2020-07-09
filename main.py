@@ -55,7 +55,6 @@ class App:
         os.mkdir(path + os.sep + "temp")
         icon = Image.open(path + os.sep + "icon.png")
         icon = icon.resize((20, 20))
-        self.master.bind("<Key>", self.event_key)
         self.image_icon = ImageTk.PhotoImage(icon)
         self.player = player.Player()
 
@@ -127,6 +126,8 @@ class App:
         self.button_end = ttk.Button(
             self.frame_player, text="End", command=self.end)
         self.button_end.grid(row=0, column=1, sticky="W")
+
+        self.event_random()
 
     def event_choreo_check(self, event):
         id = self.tree_choreo.focus()
@@ -213,33 +214,15 @@ class App:
     def event_play(self):
         self.player.add_playlist(prepareList(
             self.path, self.map_random.values()))
-        self.player.play(None)
+        self.player.play(True)
 
     def end(self):
         shutil.rmtree(self.path + os.sep + "temp")
         self.master.destroy()
 
-    def event_key(self, event):
-        if event.keysym == "space":
-            self.player.control(player.Modes.PAUSEPLAY)
-        if event.keysym == "Left":
-            self.player.control(player.Modes.PREVIOUS)
-        if event.keysym == "Right":
-            event.player.control(player.Modes.NEXT)
-
 
 if __name__ == "__main__":
     path = os.getcwd() + os.sep + "random"
-    """
-    try:
-        choreo = randomChoreo(getNumbers(path))
-        os.mkdir(path + os.sep + "temp")
-        playlist = prepareList(path, choreo)
-        player = Player(playlist)
-        player.play()
-    finally:
-        shutil.rmtree(path + os.sep + "temp")
-    """
     root = tk.Tk()
     app = App(root, path)
     root.mainloop()

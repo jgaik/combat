@@ -1,18 +1,23 @@
 import vlc
 from time import sleep
-from threading import Thread
-from pynput import keyboard
+import enum
 
+class Modes(enum.Enum):
+    NEXT = enum.auto()
+    PREVIOUS = enum.auto()
+    PAUSEPLAY = enum.auto()
 
 class Player:
 
     def __init__(self):
         self.idx_playing = 0
-        self._th_listener = keyboard.Listener(on_release=self.thread_key)
         self._active = False
 
         self.instance = vlc.Instance()
         self.player = self.instance.media_list_player_new()
+        self.manager = self.player.event_manager()
+        self.manager.event_attach(vlc.EventType.MediaListPlayerNextItemSet, self.event_itemchange)
+
 
     def add_playlist(self, playlist):
         media_list = self.instance.media_list_new()
@@ -26,43 +31,32 @@ class Player:
 
     def play(self, delay=None):
         self._active = True
-        self._th_listener.start()
-        self.player.set_fullscreen(True)
         self.player.play()
         self.wait(None)
         while self._active:
-            self.player.play_item(self.idx_playing)
-            if self.idx_playing % 2 == 0:
-                while not self.player.get_state() == 6:
-                    pass
-            else:
-                self.wait(delay)
-            self.idx_playing += 1
-        self.player.stop()
+            pass
 
-    def thread_key(self, key):
-        if key == keyboard.Key.space:
-            self.player.pause()
-            self._await_key = False
-        if key == keyboard.Key.esc:
-            self._active = False
-        if key == keyboard.Key.left:
-            self.player.previous()
-            self.idx_playing -= 1  # add checking idx
-        if key == keyboard.Key.right:
+    def control(self, mode):
+        if mode == Modes.NEXT:
             self.player.next()
-            self.idx_playing += 1  # add checking idx
+        if mode == Modes.PREVIOUS:
+            self.idx_playing -= 2
+            self.player.play_item_at_idx(self.idx_playing)
+        if mode == Modes.PAUSEPLAY:
+            self.player.pause()
 
     def wait(self, time):
         sleep(1)
         self.player.pause()
         if time is None:
-            self._await_key = True
-            while self._await_key:
-                pass
+            pass
         else:
             sleep(time)
             self.player.pause()
+      
+    def event_itemchange(self, event):
+        self.idx_playing += 1
+        print(self.idx_playing)
 
     def play2(self, delay):
         self._active = True
@@ -80,26 +74,3 @@ class Player:
             else:
                 self.wait(delay)
         self.player.stop()
-
-
-'''
-        while self._active:
-            self.wait()
-            self.player.set_mrl(self.playlist['images'][self.idx_playing])
-            self.player.play()
-            self._playing = False
-            sleep(1)
-            self.player.pause()
-            self.wait()
-            self.player.set_mrl(self.playlist['playlist'][self.idx_playing])
-            self.player.play()
-            while not self.player.get_state() == 6:
-                if not self._active:
-                    break
-            if self.idx_playing < len(self.playlist):
-                self.idx_playing = self.idx_playing + 1
-            else:
-                self._active = False
-        self.player.stop()
-        self.player.release()
-'''

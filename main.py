@@ -5,8 +5,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 import tkinter as tk
 from tkinter import ttk
 import ttkwidgets
-
-TRACKS = 10
+import player
+TRACKS = 9
 
 
 def getNumbers(path):
@@ -55,6 +55,7 @@ class App:
         icon = Image.open(path + os.sep + "icon.png")
         icon = icon.resize((20, 20))
         self.image_icon = ImageTk.PhotoImage(icon)
+        self.player = player.Player()
 
         self.frame_choreo = tk.Frame(self.master)
         self.frame_track = tk.Frame(self.master)
@@ -118,9 +119,12 @@ class App:
         self.button_reroll.grid()
 
         # player
+        self.button_play = ttk.Button(
+            self.frame_player, text="Play", command=self.event_play)
+        self.button_play.grid()
         self.button_end = ttk.Button(
             self.frame_player, text="End", command=self.end)
-        self.button_end.grid(sticky="W")
+        self.button_end.grid(row=0, column=1, sticky="W")
 
     def event_choreo_check(self, event):
         id = self.tree_choreo.focus()
@@ -203,6 +207,11 @@ class App:
                     choreo = random.choice(list_choreo_copy)
                     self.tree_random.item(
                         item, **{'text': f"Track {track} - BodyCombat {choreo}"})
+
+    def event_play(self):
+        self.player.add_playlist(prepareList(
+            self.path, self.map_random.values()))
+        self.player.play(None)
 
     def end(self):
         shutil.rmtree(self.path + os.sep + "temp")

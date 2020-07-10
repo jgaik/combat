@@ -48,7 +48,6 @@ def prepareList(path, tracklist):
 class App:
 
     def __init__(self, master, path):
-        self.player = player.Player()
         self.master = master
         self.path = path
         self.master.protocol("WM_DELETE_WINDOW", self.end)
@@ -56,7 +55,6 @@ class App:
         icon = Image.open(path + os.sep + "icon.png")
         icon = icon.resize((20, 20))
         self.image_icon = ImageTk.PhotoImage(icon)
-        self.player = player.Player()
 
         self.frame_choreo = tk.Frame(self.master)
         self.frame_track = tk.Frame(self.master)
@@ -212,9 +210,13 @@ class App:
                         item, **{'text': f"Track {track} - BodyCombat {choreo}"})
 
     def event_play(self):
+        self.master.withdraw()
+        self.player = player.Player(1)
         self.player.add_playlist(prepareList(
             self.path, self.map_random.values()))
         self.player.play(True)
+        self.player.wait_end()
+        self.master.deiconify()
 
     def end(self):
         shutil.rmtree(self.path + os.sep + "temp")

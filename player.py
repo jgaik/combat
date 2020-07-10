@@ -2,6 +2,7 @@ import vlc
 from time import sleep
 import enum
 from pynput import keyboard
+import threading as th
 
 
 class Modes:
@@ -17,11 +18,13 @@ class Player:
         if modekey in Modes.__dict__.values():
             self.control(modekey)
 
-    def __init__(self):
+    def __init__(self, duration):
         self.idx_playing = -1
         self._active = False
+        self._ended = th.Event()
 
-        self.instance = vlc.Instance('--no-xlib --fullscreen')
+        self.instance = vlc.Instance(
+            '--no-xlib --fullscreen --image-duration=' + str(duration))
         self.player = self.instance.media_list_player_new()
         self.manager = self.player.event_manager()
         self.manager.event_attach(
@@ -71,6 +74,13 @@ class Player:
             self.player.stop()
             self.listener.stop()
             self._active = False
+            self._ended.set()
 
     def event_itemchange(self, event):
         self.idx_playing += 1
+
+    def wait_end(self):
+        self._ended.wait()
+
+    def has_ended(self):
+        return self._ended.is_set()

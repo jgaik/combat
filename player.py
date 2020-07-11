@@ -1,8 +1,9 @@
 import vlc
 from time import sleep
 import enum
-from pynput import keyboard
+from pynput import keyboard, mouse
 import threading as th
+import screeninfo
 
 
 class Modes:
@@ -20,6 +21,7 @@ class Player:
 
     def __init__(self, duration):
         self.idx_playing = -1
+        self._autoplay = duration > 0
         self._active = False
         self._ended = th.Event()
 
@@ -40,14 +42,44 @@ class Player:
             self.media_len += 2
         self.player.set_media_list(media_list)
 
-    def play(self, wait=False):
+    def play(self):
         self._active = True
         self.listener = keyboard.Listener(on_release=self.press)
+        self.keyboard = keyboard.Controller()
+        self.mouse = mouse.Controller()
         self.player.play()
+        sleep(0.5)
+        self.player.pause()
+        self.change_screen()
         self.listener.start()
         while self._active:
             if self.player.get_state() == vlc.State.Ended and self.idx_playing == self.media_len - 1:
                 self.control(Modes.END)
+
+    def change_screen(self):
+        screens = screeninfo.get_monitors()
+        if len(screens) > 1:
+            if any(['HDMI' in x.name for x in screens]):
+                idx = ['HDMI' in x.name for x in screens].index(True)
+                monitor = screens[idx]
+                self.keyboard.press(keyboard.Key.cmd)
+                self.keyboard.press(keyboard.Key.shift_l)
+                if monitor.x > 0:
+                    self.keyboard.press(keyboard.Key.right)
+                    self.keyboard.release(keyboard.Key.right)
+                else:
+                    self.keyboard.press(keyboard.Key.left)
+                    self.keyboard.release(keyboard.Key.left)
+                self.keyboard.release(keyboard.Key.cmd)
+                self.keyboard.release(keyboard.Key.shift_l)
+                sleep(0.5)
+        else:
+            monitor = screens[0]
+        cur_pos = self.mouse.position
+        self.mouse.position = (
+            (monitor.x + monitor.width)/2, (monitor.y + monitor.height) / 2)
+        self.mouse.click(mouse.Button.left, 2)
+        self.mouse.position = cur_pos
 
     def control(self, mode):
         if mode == Modes.NEXT:
@@ -69,6 +101,8 @@ class Player:
 
         if mode == Modes.PAUSEPLAY:
             self.player.pause()
+            if (not self._autoplay and not self.idx_playing % 2 == 0) or self.idx_playing == 0:
+                self.player.next()
 
         if mode == Modes.END:
             self.player.stop()

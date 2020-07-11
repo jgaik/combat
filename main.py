@@ -5,7 +5,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 import tkinter as tk
 from tkinter import ttk
 import ttkwidgets
-#import player
+import player
+
 TRACKS = 9
 
 
@@ -52,9 +53,15 @@ class App:
         self.path = path
         self.master.protocol("WM_DELETE_WINDOW", self.end)
         os.mkdir(path + os.sep + "temp")
-        icon = Image.open(path + os.sep + "icon.png")
-        icon = icon.resize((20, 20))
-        self.image_icon = ImageTk.PhotoImage(icon)
+
+        self.master.resizable(width=False, height=False)
+        self.master.title("BodyCombat randomizer")
+        icon = Image.open(path + os.sep + "icon.ico")
+        self.master.iconphoto(True, ImageTk.PhotoImage(icon))
+        icon_button = Image.open(path + os.sep + "icon_button.png")
+        icon_button = icon_button.resize((20, 20))
+        self.image_icon_button = ImageTk.PhotoImage(icon_button)
+        self.master.bind("<Key>", self.event_key)
 
         # choreo list
         self.var_choreo = tk.BooleanVar()
@@ -66,7 +73,7 @@ class App:
             self.master, show="tree", height=TRACKS)
         self.tree_choreo.column("#0", width=120)
         self.tree_choreo.bind(
-            "<<TreeviewSelect>>", self.event_choreo_check)
+            "<<TreeviewSelect>>", self.event_check_choreo)
         self.list_choreo = []
         for item in getNumbers(self.path):
             id = self.tree_choreo.insert("", "end", text=f"BC {item}")
@@ -74,9 +81,12 @@ class App:
             self.tree_choreo.change_state(id, "checked")
             self.list_choreo.append(id)
 
-        ttk.Label(self.master, text="Choreographies:").grid(columnspan=2,sticky="W")
-        self.tree_choreo.grid(column=0, columnspan=2, sticky="WE", pady=5)
-        self.check_choreo.grid(column=0, columnspan=2, sticky="W", pady=5)
+        ttk.Label(self.master, text="Choreographies:").grid(
+            columnspan=2, sticky="W", padx=5)
+        self.tree_choreo.grid(column=0, columnspan=2,
+                              sticky="WE", padx=5)
+        self.check_choreo.grid(column=0, columnspan=2,
+                               sticky="W", pady=5, padx=5)
 
         # track list
         self.var_track = tk.BooleanVar()
@@ -88,32 +98,33 @@ class App:
             self.master, show="tree", height=TRACKS)
         self.tree_track.column("#0", width=100)
         self.tree_track.bind(
-            "<<TreeviewSelect>>", self.event_track_check)
+            "<<TreeviewSelect>>", self.event_check_track)
         self.list_track = []
         for item in range(TRACKS):
             id = self.tree_track.insert("", "end", text=f"Track {item}")
             self.map_track[id] = item
             self.tree_track.change_state(id, "checked")
             self.list_track.append(id)
-            
-        ttk.Label(self.master, text="Tracks:").grid(row=0, column=2, sticky="W")
-        self.tree_track.grid(row=1, column=2, sticky="WE", pady=5)
-        self.check_track.grid(row=2, column=2,sticky="W", pady=5)
+
+        ttk.Label(self.master, text="Tracks:").grid(
+            row=0, column=2, sticky="W", padx=5)
+        self.tree_track.grid(row=1, column=2, sticky="WE", padx=5)
+        self.check_track.grid(row=2, column=2, sticky="W", pady=5, padx=5)
 
         # random list
         self.button_random = ttk.Button(
             self.master, text="Randomize", command=self.event_random)
-        
+
         self.tree_random = ttkwidgets.CheckboxTreeview(
             self.master, show="tree", height=TRACKS)
         self.tree_random.bind("<<TreeviewSelect>>", self.event_random_check)
         self.tree_random.column("#0", width=150)
         self.button_reroll = ttk.Button(
-            self.master, text="Reroll selected", image=self.image_icon, compound=tk.LEFT, command=self.event_reroll)
+            self.master, text="Reroll selected", image=self.image_icon_button, compound=tk.LEFT, command=self.event_reroll)
 
-        self.button_random.grid(row=0, column=3)
-        self.tree_random.grid(row=1, column=3,pady=3)
-        self.button_reroll.grid(row=2, column=3,pady=2)
+        self.button_random.grid(row=0, column=3, pady=3)
+        self.tree_random.grid(row=1, column=3, padx=5)
+        self.button_reroll.grid(row=2, column=3, pady=2)
 
         # player
         self.var_autoplay = tk.BooleanVar()
@@ -123,31 +134,32 @@ class App:
         self.spin_delay = ttk.Spinbox(
             self.master, from_=1, to=9, width=1)
         self.spin_delay.set(1)
-        self.label_delay = ttk.Label(self.master, text="Delay[s]:")
+        self.label_delay = ttk.Label(self.master, text="Delay [s]:")
         self.button_play = ttk.Button(
             self.master, text="Play", command=self.event_play)
         self.button_end = ttk.Button(
             self.master, text="End", command=self.end)
 
-        self.check_autoplay.grid(row=3,column=0, columnspan=2, sticky="W")
-        self.label_delay.grid(row=4,column=0)
+        self.check_autoplay.grid(
+            row=3, column=0, columnspan=2, sticky="W", padx=5)
+        self.label_delay.grid(row=4, column=0)
         self.spin_delay.grid(row=4, column=1)
-        self.button_play.grid(row=3, column=2, rowspan=2, pady=15, sticky="W")
-        self.button_end.grid(row=3, column=3, rowspan=2, pady=15, padx=10, sticky="E")
+        self.button_play.grid(row=3, column=2, rowspan=2, pady=15, sticky="WE")
+        self.button_end.grid(row=3, column=3, rowspan=2,
+                             pady=15, padx=10)
 
         self.event_check_autoplay()
         self.event_random()
-    
-    def event_check_autoplay(self):
-      if self.var_autoplay.get():
-        self.spin_delay.grid()
-        self.label_delay.grid()
-        self.master.bind("<Key>", self.event_key_spin)
-      else:
-        self.spin_delay.grid_remove()
-        self.label_delay.grid_remove()
 
-    def event_choreo_check(self, event):
+    def event_check_autoplay(self):
+        if self.var_autoplay.get():
+            self.spin_delay.grid()
+            self.label_delay.grid()
+        else:
+            self.spin_delay.grid_remove()
+            self.label_delay.grid_remove()
+
+    def event_check_choreo(self, event):
         id = self.tree_choreo.focus()
         if id in self.list_choreo:
             self.tree_choreo.change_state(id, "unchecked")
@@ -170,7 +182,7 @@ class App:
                     self.tree_choreo.change_state(item, "unchecked")
                     self.list_choreo.remove(item)
 
-    def event_track_check(self, event):
+    def event_check_track(self, event):
         id = self.tree_track.focus()
         if id in self.list_track:
             self.tree_track.change_state(id, "unchecked")
@@ -227,23 +239,32 @@ class App:
                 if list_choreo_copy:
                     choreo = random.choice(list_choreo_copy)
                     self.tree_random.item(
-                        item, **{'text': f"Track {track} - BodyCombat {choreo}"})
+                        item, **{'text': f"Track {track} - BC {choreo}"})
 
     def event_play(self):
         self.master.withdraw()
-        self.player = player.Player(1)
+        if self.var_autoplay.get():
+            self.player = player.Player(int(self.spin_delay.get()))
+        else:
+            self.player = player.Player(-1)
         self.player.add_playlist(prepareList(
             self.path, self.map_random.values()))
-        self.player.play(True)
+        self.player.play()
         self.player.wait_end()
         self.master.deiconify()
 
-    def event_key_spin(self, event):
+    def event_key(self, event):
         if self.var_autoplay.get():
             if event.keysym == "Up":
                 self.spin_delay.event_generate("<<Increment>>")
             if event.keysym == "Down":
                 self.spin_delay.event_generate("<<Decrement>>")
+        if event.keysym == "Return":
+            self.button_play.invoke()
+        if event.keysym == "Escape":
+            self.button_end.invoke()
+        if event.keysym == "space":
+            self.check_autoplay.invoke()
 
     def end(self):
         shutil.rmtree(self.path + os.sep + "temp")
